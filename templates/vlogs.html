@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🎥 Vlog Your Feelings</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            background-color: #fef6ff;
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .vlog-box {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            max-width: 600px;
+            margin: auto;
+        }
+
+        textarea {
+            width: 100%;
+            height: 160px;
+            padding: 15px;
+            border: 2px dashed #d29eff;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'Courier New', Courier, monospace;
+            background: #fff0ff;
+            color: #333;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 24px;
+            border-radius: 10px;
+            background-color: #a66cff;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #944ce6;
+        }
+
+        .result {
+            margin-top: 30px;
+            background: #faf3ff;
+            padding: 20px;
+            border-radius: 16px;
+            font-size: 16px;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .streak {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        a {
+            color: #8e44ad;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2>Hey {{ username }}! 🌈 Time to vlog it out!</h2>
+
+    <div class="vlog-box">
+        <form method="post">
+            <textarea name="vlog_text" placeholder="Tell me everything... 💬" required></textarea><br>
+            <button type="submit">✨ Analyze My Vlog</button>
+        </form>
+    </div>
+
+    {% if result %}
+    <div class="result">
+        <p><strong>Sentiment:</strong> {{ result.sentiment }} ({{ result.sentiment_score }})</p>
+        <p><strong>Emotions:</strong> {{ result.emotions }}</p>
+        <p><strong>Stress Score:</strong> {{ result.stress_score }}/10</p>
+        <p><strong>Time:</strong> {{ result.timestamp }}</p>
+    </div>
+    {% endif %}
+
+    <p class="streak">🔥 Your current streak: {{ streak }} days</p>
+
+    <!-- 📊 Trends Link -->
+    <p style="margin-top: 20px;">
+        <a href="/trends">📊 View Emotional Trends</a>
+    </p>
+
+    <!-- Back to mood/dashboard -->
+    <p style="margin-top: 10px;">
+        <a href="/">← Back to Dashboard</a>
+    </p>
+</body>
+</html>

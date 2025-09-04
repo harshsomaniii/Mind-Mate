@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Select Your Mood</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-image: url("{{ url_for('static', filename='images/9b7198c1-9ed2-49ea-b576-74b5491e29d2.png') }}");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      overflow-x: hidden;
+      transition: background-color 0.6s ease;
+    }
+
+    .mood-box {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
+      max-width: 420px;
+      margin: 80px auto;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      text-align: center;
+      transition: all 0.6s ease;
+    }
+
+    .centered {
+      margin-top: 10vh !important;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      font-size: 28px;
+      color: #1e3a8a;
+      margin-bottom: 25px;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 18px;
+      color: #1e293b;
+    }
+
+    select {
+      margin-top: 10px;
+      font-size: 16px;
+      padding: 10px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      background: linear-gradient(to right, #7f5af0, #6246ea);
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      margin-top: 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+      transition: transform 0.2s ease;
+    }
+
+    button:hover {
+      transform: scale(1.04);
+    }
+
+    .mental-quote {
+      margin-top: 40px;
+      font-style: italic;
+      color: #fff;
+      font-size: 16px;
+      text-align: center;
+      text-shadow: 0 0 4px rgba(0,0,0,0.4);
+    }
+
+    .emoji {
+      position: fixed;
+      font-size: 32px;
+      pointer-events: none;
+      animation: floatEmoji 6s linear infinite;
+      z-index: 0;
+    }
+
+    .popup-emoji {
+      font-size: 70px;
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      animation: popEmoji 1s ease-out forwards;
+    }
+
+    @keyframes floatEmoji {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-120vh) scale(1.5); opacity: 0; }
+    }
+
+    @keyframes popEmoji {
+      0% { opacity: 0; transform: scale(0) translateX(-50%); }
+      50% { opacity: 1; transform: scale(1.3) translateX(-50%); }
+      100% { opacity: 0; transform: scale(1) translateX(-50%); }
+    }
+
+    @media (max-width: 600px) {
+      .mood-box {
+        width: 90%;
+        margin: 40px auto;
+      }
+
+      h2 {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body id="moodBody">
+  <div class="mood-box" id="moodBox">
+    <h2>Hi {{ username }}, how are you feeling today? 💭</h2>
+    <form method="post" action="/journal">
+      <label>Select your mood:</label><br>
+      <select name="mood_emoji" id="moodSelect" required>
+        <option value="">-- Choose a mood --</option>
+        <option value="😄">😄 Happy</option>
+        <option value="😊">😊 Content</option>
+        <option value="😐">😐 Neutral</option>
+        <option value="😟">😟 Anxious</option>
+        <option value="😢">😢 Sad</option>
+      </select><br><br>
+
+      <button type="submit" id="submitBtn">Dear Diary ✍️</button>
+      <button type="button" onclick="window.location.href='/vlogs'">🎥 Vlogs</button>
+      <button type="button" onclick="window.location.href='/chatbot'">💬 Mental Mate</button>
+    </form>
+  </div>
+
+  <div class="mental-quote">
+    “Your mental health is a priority. Your happiness is essential. Your self-care is a necessity.” 💚
+  </div>
+
+  <script>
+    const moodSelect = document.getElementById("moodSelect");
+    const body = document.getElementById("moodBody");
+    const moodBox = document.getElementById("moodBox");
+    let emojiRainActive = true;
+
+    const emojiMap = {
+      "😄": "#e0f8ec",
+      "😊": "#f0f9ff",
+      "😐": "#f7f7f7",
+      "😟": "#fff3cd",
+      "😢": "#fde2e2"
+    };
+
+    const mixedEmojis = Object.keys(emojiMap);
+
+    setInterval(() => {
+      if (emojiRainActive) {
+        const emoji = mixedEmojis[Math.floor(Math.random() * mixedEmojis.length)];
+        createEmoji(emoji);
+      }
+    }, 300);
+
+    moodSelect.addEventListener("change", function () {
+      const mood = this.value;
+
+      if (emojiMap[mood]) {
+        body.style.backgroundColor = emojiMap[mood];  // Still used for subtle overlay
+        emojiRainActive = false;
+        document.querySelectorAll('.emoji').forEach(e => e.remove());
+        moodBox.classList.add("centered");
+        showPopupEmoji(mood);
+      }
+    });
+
+    function createEmoji(emoji) {
+      const span = document.createElement("span");
+      span.classList.add("emoji");
+      span.textContent = emoji;
+      span.style.left = Math.random() * 100 + "vw";
+      span.style.top = Math.random() * 100 + "vh";
+      span.style.fontSize = Math.random() * 16 + 24 + "px";
+      document.body.appendChild(span);
+    }
+
+    function showPopupEmoji(emoji) {
+      const popup = document.createElement("div");
+      popup.classList.add("popup-emoji");
+      popup.textContent = emoji;
+      document.body.appendChild(popup);
+      setTimeout(() => popup.remove(), 1500);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daily Journal Mood Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h2>Welcome, {{ username }} 👋</h2>
+    <a href="/logout">Logout</a>
+    <h2>📝 Daily Diary</h2>
+
+    <!-- Diary Style Form -->
+    <div class="diary-container">
+        <form method="post" action="/journal">
+
+            <label>How are you feeling today?</label><br>
+            <textarea name="journal_text" rows="10" required></textarea><br><br>
+
+            <button type="submit">Analyze</button>
+        </form>
+    </div>
+
+    <!-- Show Results -->
+    {% if result %}
+    <hr>
+    <h3>📊 Your Emotional Analysis</h3>
+    <p><strong>Sentiment:</strong> {{ result.sentiment }} ({{ result.sentiment_score }})</p>
+    <p><strong>Detected Emotions:</strong> {{ result.emotions }}</p>
+    <p><strong>Stress Score:</strong> {{ result.stress_score }}/10</p>
+    <p><strong>Time:</strong> {{ result.timestamp }}</p>
+    {% endif %}
+
+    <!-- Trends link -->
+    <p style="text-align:center; margin-top: 20px;">
+        <a href="/trends">📊 View Emotional Trends</a>
+    </p>
+<p class="streak">🔥 Daily Streak: <strong>{{ streak }}</strong> days</p>
+
+    
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>📊 Emotional Trends</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h2>📈 Emotional Trends Dashboard</h2>
+    <p><a href="/">← Back to Home</a></p>
+
+    <h3>🧠 Sentiment Over Time</h3>
+    <canvas id="sentimentChart"></canvas>
+
+    <h3>😓 Stress Score Over Time</h3>
+    <canvas id="stressChart"></canvas>
+
+    <h3>🗂️ Top Emotions This Week</h3>
+    <canvas id="emotionChart"></canvas>
+
+    <script>
+        const labels = {{ dates|tojson }};
+        const sentimentData = {{ sentiments|tojson }};
+        const stressData = {{ stresses|tojson }};
+        const emotionLabels = {{ top_emotions | map(attribute=0) | list | tojson }};
+        const emotionCounts = {{ top_emotions | map(attribute=1) | list | tojson }};
+
+        new Chart(document.getElementById("sentimentChart"), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Sentiment Score',
+                    data: sentimentData,
+                    borderColor: 'green',
+                    backgroundColor: 'rgba(0,128,0,0.1)',
+                    tension: 0.3,
+                    fill: true
+                }]
+            }
+        });
+
+        new Chart(document.getElementById("stressChart"), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Stress Score',
+                    data: stressData,
+                    borderColor: 'red',
+                    backgroundColor: 'rgba(255,0,0,0.1)',
+                    tension: 0.3,
+                    fill: true
+                }]
+            }
+        });
+
+        new Chart(document.getElementById("emotionChart"), {
+            type: 'bar',
+            data: {
+                labels: emotionLabels,
+                datasets: [{
+                    label: 'Emotion Count',
+                    data: emotionCounts,
+                    backgroundColor: 'steelblue'
+                }]
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Suggestions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif; /* Changed font to Roboto for a modern look */
+      background-color: #eef2f7; /* Lighter, softer background */
+      padding: 30px;
+      text-align: center;
+      color: #333; /* Darker text for better readability */
+      line-height: 1.6;
+    }
+
+    h2 {
+      color: #2c3e50; /* Darker blue for headings */
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    p {
+      margin-bottom: 10px;
+    }
+
+    .ai-box {
+      background-color: #ffffff; /* White background for the suggestion box */
+      border-left: 8px solid #3498db; /* Slightly thicker and more vibrant blue border */
+      padding: 25px;
+      border-radius: 12px; /* Slightly more rounded corners */
+      margin-top: 30px;
+      max-width: 750px; /* Slightly wider box */
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* More pronounced shadow */
+      text-align: left; /* Align text left within the box */
+    }
+
+    .ai-box h2 {
+      color: #3498db; /* Blue for the AI Suggestions heading */
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .ai-box p {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    .ai-box p strong {
+      color: #2980b9; /* Darker blue for strong text */
+    }
+
+    .ai-box p.suggestion-item { /* New class for suggestion list items */
+      font-weight: 600;
+      color: #2980b9;
+      padding-left: 15px; /* Indent for list items */
+      position: relative;
+    }
+
+    .ai-box p.suggestion-item::before { /* Custom bullet point */
+      content: '✨'; /* Sparkle emoji for bullet */
+      position: absolute;
+      left: 0;
+      color: #f1c40f; /* Yellow for the sparkle */
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: #3498db; /* Consistent blue */
+      color: white;
+      padding: 12px 25px; /* Slightly larger padding */
+      border-radius: 30px; /* Pill-shaped buttons */
+      text-decoration: none;
+      margin: 15px 10px; /* Increased margin for better spacing */
+      transition: background-color 0.3s ease, transform 0.2s ease; /* Added transform for hover effect */
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn:hover {
+      background-color: #2980b9; /* Darker blue on hover */
+      transform: translateY(-2px); /* Slight lift on hover */
+    }
+
+    .btn-journal {
+        background-color: #3498db;
+    }
+
+    .btn-trends {
+        background-color: #9b59b6; /* Purple */
+    }
+
+    .btn-dashboard {
+        background-color: #2ecc71; /* Emerald Green */
+    }
+
+    .videos {
+      margin-top: 50px; /* More space above videos */
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px; /* Increased gap between video cards */
+    }
+
+    .video-card {
+      width: 320px; /* Slightly wider cards */
+      text-align: center;
+      background: #ffffff;
+      padding: 20px; /* More padding */
+      border-radius: 15px; /* More rounded corners */
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12); /* Stronger, softer shadow */
+      transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover */
+    }
+
+    .video-card:hover {
+      transform: translateY(-5px); /* Lift effect on hover */
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18); /* Enhanced shadow on hover */
+    }
+
+    .video-card img {
+      width: 100%;
+      border-radius: 12px; /* Slightly less rounded than card for visual contrast */
+      margin-bottom: 15px;
+    }
+
+    .video-card p {
+      margin-top: 0; /* Remove top margin */
+      font-size: 16px;
+      color: #333;
+      font-weight: 500;
+      min-height: 48px; /* Ensure consistent height for titles */
+      display: -webkit-box;
+      -webkit-line-clamp: 2; /* Limit title to 2 lines */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .video-card a {
+      text-decoration: none; /* Remove underline from video links */
+      color: inherit; /* Inherit color from parent */
+    }
+
+    .back-links {
+      margin-top: 50px;
+      padding-bottom: 30px; /* Add some padding at the bottom */
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      body {
+        padding: 15px;
+      }
+
+      .ai-box, .video-card {
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        margin: 10px 5px;
+      }
+
+      .videos {
+        gap: 15px;
+      }
+
+      .video-card {
+        width: 90%; /* Make video cards take more width on smaller screens */
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>Hello {{ username }} 👋</h2>
+  <p><strong>Mood:</strong> {{ mood }}</p>
+  <p><strong>Emotions:</strong> {{ emotions | join(', ') }}</p>
+  <p><strong>Sentiment:</strong> {{ sentiment }}</p>
+  <p><strong>Timestamp:</strong> {{ timestamp }}</p>
+
+  {% if suggestions %}
+    <div class="ai-box">
+      <h2>🌟 AI Suggestions for You</h2>
+      {% for line in suggestions.split('\n') %}
+        {% if line.strip().startswith('1.') or line.strip().startswith('2.') or line.strip().startswith('3.') %}
+          <p class="suggestion-item">{{ line.strip() }}</p>
+        {% else %}
+          <p>{{ line.strip() }}</p>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No suggestions available.</p>
+  {% endif %}
+
+  {% if youtube_videos %}
+    <div class="videos">
+      {% for video in youtube_videos %}
+        <div class="video-card">
+          <a href="https://www.youtube.com/watch?v={{ video.video_id }}" target="_blank">
+            <img src="{{ video.thumbnail }}" alt="{{ video.title }}">
+            <p>{{ video.title }}</p>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="back-links">
+    <a href="{{ url_for('journal') }}" class="btn btn-journal">✍ Write Another Journal</a>
+    <a href="{{ url_for('trends') }}" class="btn btn-trends">📈 View Mood Trends</a>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-dashboard">⬅ Back to Dashboard</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>💬 AI Chatbot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            position: relative;
+            overflow-x: hidden; /* allow vertical scrolling only */
+        }
+
+        /* Baymax GIF background */
+        .gif-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("{{ url_for('static', filename='images/baymax.gif') }}") no-repeat center center;
+            background-size: cover;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 40px;
+            color: #333;
+            position: relative;
+            z-index: 1;
+        }
+
+        .chat-container {
+            background: rgba(255, 255, 255, 0.92);
+            padding: 25px;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            margin: 30px auto;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .chat-bubble {
+            padding: 12px 16px;
+            margin: 10px 0;
+            border-radius: 16px;
+            max-width: 75%;
+        }
+
+        .user {
+            background-color: #d0e6ff;
+            text-align: right;
+            margin-left: auto;
+        }
+
+        .assistant {
+            background-color: #ffffff;
+            text-align: left;
+            margin-right: auto;
+        }
+
+        form {
+            display: flex;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+            min-width: 60%;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #6c63ff;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #574b90;
+        }
+
+        a {
+            color: #333;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="gif-background"></div>
+
+    <h2>🧘 Hello {{ username }}, let's talk</h2>
+
+    <div class="chat-container">
+        {% for msg in chat_log %}
+            <div class="chat-bubble {{ msg.role }}">
+                <strong>{{ 'You' if msg.role == 'user' else 'Bot' }}:</strong> {{ msg.content }}
+            </div>
+        {% endfor %}
+
+        <form method="post">
+            <input type="text" name="user_input" placeholder="Type your message..." required>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <a href="/">← Back to Dashboard</a>
+</body>
+</html>
